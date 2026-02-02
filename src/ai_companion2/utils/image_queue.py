@@ -2,9 +2,9 @@ from pathlib import Path
 from typing import Optional
 
 from ai_companion2.config.settings import IMAGES_DIR
+from ai_companion2.utils.logging import delete_log
 
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
-
 
 def list_images() -> list[Path]:
     """Return a list of image files in the images directory."""
@@ -29,6 +29,14 @@ def get_oldest_image() -> Optional[Path]:
     files.sort(key=lambda p: p.stat().st_mtime)
     return files[0]
 
+def get_newest_image() -> Optional[Path]:
+    """Return the newest image file by modification time, or None if empty."""
+    files = list_images()
+    if not files:
+        return None
+
+    files.sort(key=lambda p: p.stat().st_mtime, reverse=True)
+    return files[0]
 
 def delete_oldest_image() -> Optional[Path]:
     """
@@ -39,5 +47,6 @@ def delete_oldest_image() -> Optional[Path]:
     if oldest is None:
         return None
 
+    delete_log(oldest)
     oldest.unlink(missing_ok=True)
     return oldest
