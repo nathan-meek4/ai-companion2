@@ -50,3 +50,8 @@ def delete_oldest_image() -> Optional[Path]:
     delete_log(oldest)
     oldest.unlink(missing_ok=True)
     return oldest
+
+def load_image_bytes(path: str) -> bytes:
+    with open(path, "rb") as f:
+        return f.read()
+    
